@@ -30,5 +30,8 @@
     "babel-preset-es2015": "*",
     "eslint": "^3.19.0",
     "nodemon": "*"
+  },
+  "engines": {
+    "node": "8.0.0"
   }
 }
