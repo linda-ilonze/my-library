@@ -35,6 +35,6 @@ app.use(function(req,res,next){
 });
 
 //start up server
-var server = app.listen(2000, function(){
+var server = app.listen(process.env.PORT || 2000, function(){
     console.log('Listening on port ' + server.address().port);
 });
