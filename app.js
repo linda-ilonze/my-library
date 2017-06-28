@@ -20,7 +20,7 @@ app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
 
 //set up mongoose
-mongoose.connect('mongodb://localhost/my-library');
+mongoose.connect('mongodb://admin:admin@ds141232.mlab.com:41232/my-library');
 mongoose.set('debug',true);
 
 //set up routes
