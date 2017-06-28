@@ -1,8 +1,8 @@
 {
-  "name": "y",
+  "name": "my-library",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "lint": "eslint app.js",
     "start": "babel-node app.js",
@@ -22,11 +22,11 @@
     "morgan": "*",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
-    "slug": "^0.9.1",
-    "babel-cli": "*",
-    "babel-preset-es2015": "*"
+    "slug": "^0.9.1"
   },
   "devDependencies": {
+    "babel-cli": "*",
+    "babel-preset-es2015": "*",
     "babel-eslint": "^7.2.3",
     "eslint": "^3.19.0",
     "nodemon": "*"
