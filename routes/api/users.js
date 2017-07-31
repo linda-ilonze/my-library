@@ -22,11 +22,16 @@ router.post('/',function(req,res,next){
 });
 
 router.get('/', auth.required, function(req, res, next){
-    User.findById(req.payload.id).then(function(user){
-        if(!user){return res.sendStatus(401); }
+     
+    User
+    .findById(req.payload.id)
+    .populate('books')
+    .exec(function(err,user){
+        if(err){return res.sendStatus(401); }
 
         return res.json({user:user.toProfileJSONFor()});
-    }).catch(next); 
+    })
+    .catch(next); 
 });
 
 
@@ -71,8 +76,24 @@ router.post('/addBook', auth.required, function(req,res,next){
                 }
             })
         }
-    })
+    })(req, res, next);
 });
 
+router.get('/getBooks', auth.required, function(req,res,next){
+    const ids = req.query.ids.split(',');
+    console.log(ids);
+    const mongooseIds = ids.map((id) => {
+        return mongoose.Types.ObjectId(id);
+    });
+    Book.find({
+        '_id': { $in:mongooseIds}
+    }).then(function(books){
+        return res.json({
+            books: books.map(function(book){
+                return book.toJSONFor()
+            })
+        });
+    })
+});
 
 export default router;

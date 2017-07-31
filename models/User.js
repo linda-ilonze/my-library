@@ -40,11 +40,6 @@ UserSchema.methods.generateJWT = function(){
 };
 
 
-UserSchema.methods.addBook = function(bookId) {
-        this.books.push(bookId);
-        return this.save();
-}
-
 UserSchema.methods.toAuthJSON = function(){
 return {
     username:this.username,
@@ -55,10 +50,11 @@ return {
 
 UserSchema.methods.toProfileJSONFor = function(user){
 return {
-    username: this.username,
+    user: this.username,
     bio:this.bio,
-    books : this.books,
-    email: this.email
+    books:this.books,
+    email:this.email
+
 };
 };
 export default mongoose.model('User', UserSchema);
