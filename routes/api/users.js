@@ -28,7 +28,8 @@ router.get('/', auth.required, function(req, res, next){
     .populate('books')
     .exec(function(err,user){
         if(err){return res.sendStatus(401); }
-
+        console.log(req.payload.id);
+        
         return res.json({user:user.toProfileJSONFor()});
     })
     .catch(next); 
@@ -58,25 +59,47 @@ router.post('/login', function(req, res, next){
 
 router.post('/addBook', auth.required, function(req,res,next){
     console.log('calling add book.....');
-    User.findById(req.payload.id).then(function(user){
-        if(!user){return res.sendStatus(401); }
+
+    console.log(req.payload.id);
+
+    User.findById( req.payload.id)  
+    .exec(function(err, returnedUser){
+        console.log(returnedUser);
+        if(!returnedUser){return res.sendStatus(500); }
         
         if(req.body.book !== null)
         {
-           // const tempBook = new Book(req.body.book);
+            console.log("calling find book");
+            Book.findOne({title: {"$eq": req.body.book.title}})
+             .exec(function(err,searchedBook){
 
-            return Book.findOne({title: {"$eq": req.body.book.title}}, function(err,book){
-                if(book !== null){
-                    console.log(book);
-                    return user.addBook(book._id)
-                            .then(function(){
+                if(book === null){
+                    console.log("book does not exist, creating it");
+                    
+                    const book = new Book(req.body.book);
+                    return book.save().then(function(savedBook){
+                        //then save it for the user
+                        return user.addBook(res._id)
+                            .then(function(addedBook){
                                 console.log('adding book done');
-                            return res.json({user:user.toProfileJSONFor()});
+                                return res.json({user:addedBook.toProfileJSONFor()});
                             });
+                    });  
                 }
+                else {
+                    console.log("book already exists " + searchedBook);
+                    return returnedUser.addBook(searchedBook._id)
+                                .then(function(addedBook){
+                                    console.log('adding book done');
+                                    return res.json({books:addedBook.toProfileJSONFor()});
+                                });
+
+                }
+
+
             })
         }
-    })(req, res, next);
+    }); 
 });
 
 router.get('/getBooks', auth.required, function(req,res,next){
