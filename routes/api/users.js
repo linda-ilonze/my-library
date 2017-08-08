@@ -73,13 +73,15 @@ router.post('/addBook', auth.required, function(req,res,next){
             Book.findOne({title: {"$eq": req.body.book.title}})
              .exec(function(err,searchedBook){
 
-                if(book === null){
+                if(searchedBook === null){
                     console.log("book does not exist, creating it");
                     
                     const book = new Book(req.body.book);
-                    return book.save().then(function(savedBook){
+                    return book.save()
+                    .then(function(savedBook){
                         //then save it for the user
-                        return user.addBook(res._id)
+                        console.log("book saved, now calling add");
+                        return user.addBook(savedBook._id)
                             .then(function(addedBook){
                                 console.log('adding book done');
                                 return res.json({user:addedBook.toProfileJSONFor()});
