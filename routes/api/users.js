@@ -93,7 +93,7 @@ router.post('/addBook', auth.required, function(req,res,next){
                     return returnedUser.addBook(searchedBook._id)
                                 .then(function(addedBook){
                                     console.log('adding book done');
-                                    return res.json({books:addedBook.toProfileJSONFor()});
+                                    return res.json({user:addedBook.toProfileJSONFor()});
                                 });
 
                 }
