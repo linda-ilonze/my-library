@@ -57,6 +57,26 @@ router.post('/login', function(req, res, next){
     })(req, res, next);
 });
 
+router.delete('/deleteBook', auth.required, function(req,res,next){
+    console.log("calling delete book");
+
+    User.findById(req.payload.id)
+    .exec(function(err, returnedUser){
+        if(!returnedUser){return res.sendStatus(401)}
+        console.log(returnedUser);
+        
+        if(req.body.bookId !== null){
+            console.log("removing book");
+
+            returnedUser.removeBook(req.body.bookId)
+            .then(function(response){
+                console.log(response);
+                return res.json({message:"Book Deleted"});
+            })
+        }
+    })
+})
+
 router.post('/addBook', auth.required, function(req,res,next){
     console.log('calling add book.....');
 
@@ -65,7 +85,7 @@ router.post('/addBook', auth.required, function(req,res,next){
     User.findById( req.payload.id)  
     .exec(function(err, returnedUser){
         console.log(returnedUser);
-        if(!returnedUser){return res.sendStatus(500); }
+        if(!returnedUser){return res.sendStatus(401); }
         
         if(req.body.book !== null)
         {
@@ -81,7 +101,7 @@ router.post('/addBook', auth.required, function(req,res,next){
                     .then(function(savedBook){
                         //then save it for the user
                         console.log("book saved, now calling add");
-                        return user.addBook(savedBook._id)
+                        return returnedUser.addBook(savedBook._id)
                             .then(function(addedBook){
                                 console.log('adding book done');
                                 return res.json({user:addedBook.toProfileJSONFor()});

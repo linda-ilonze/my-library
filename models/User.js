@@ -41,8 +41,25 @@ UserSchema.methods.generateJWT = function(){
 
 
 UserSchema.methods.addBook = function(bookId) {
+    if(!this.books.includes(bookId)){
         this.books.push(bookId);
         return this.save();
+    }else{
+        console.log("book already added");
+    }
+
+}
+
+UserSchema.methods.removeBook = function(bookId) {
+    console.log(bookId);
+    const index = this.books.indexOf(bookId);
+    console.log(index);
+    if(index > -1){
+        this.books.splice(index,1);
+        return this.save();
+    }else{
+        return this.save();
+    }
 }
 
 UserSchema.methods.toAuthJSON = function(){
